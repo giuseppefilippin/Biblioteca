@@ -1,2 +1,2 @@
 # Biblioteca
- Java livrary with threads
+ Java library with threads
