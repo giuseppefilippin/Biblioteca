@@ -40,17 +40,16 @@ class Biblioteca {
     }
 }
 
-class Usuario implements Runnable {
-    private final int id;
-    private final Biblioteca biblioteca;
+class InicializaUsuario extends Thread {
+    private int id;
+    private Biblioteca biblioteca;
 
-    public Usuario(int id, Biblioteca biblioteca) {
+    public InicializaUsuario(int id, Biblioteca biblioteca) {
         this.id = id;
         this.biblioteca = biblioteca;
     }
 
-    @Override
-    public void run() {
+    public void executar() {
         try {
             while (true) {
                 int livro = ThreadLocalRandom.current().nextInt(10);
@@ -66,12 +65,18 @@ class Usuario implements Runnable {
 }
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         Biblioteca biblioteca = new Biblioteca();
         Thread[] usuarios = new Thread[3];
 
         for (int i = 0; i < 3; i++) {
-            usuarios[i] = new Thread(new Usuario(i + 1, biblioteca));
+            final int id = i + 1;
+            InicializaUsuario inicializaUsuario = new InicializaUsuario(id, biblioteca);
+            usuarios[i] = new Thread(new Runnable() {
+                public void run() {
+                    inicializaUsuario.executar();
+                }
+            });
             usuarios[i].start();
         }
 
